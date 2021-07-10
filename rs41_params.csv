@@ -1,0 +1,63 @@
+param_name,description
+10,
+20,
+30,
+40,
+45,Serial number
+50,Sonde model
+60,Firmware version
+70,
+75,
+76,
+77,
+80,
+90,
+A0,
+B0,
+C0,
+D0,Height [m] above the launch site that the RS41 must climb to before entering flight mode.
+E0,Low battery voltage threshold [100 mV] below which the probe will turn off (if the condition persists for some time). 18 = 1.8V
+100,
+110,
+120,
+130,
+140,
+150,
+160,
+170,PCB type
+180,PCB serial
+190,
+1A0,
+1A8,
+1B0,
+1B8,
+1C0,
+1C8,
+1D0,
+1D5,
+1D8,
+1E0,
+200,Current battery voltage [100 mV]. 29 = 2.9 V.
+210,
+220,Current CPU temperature [° C]
+230,Current radio temperature (Si4032) [° C]
+240,
+250,Current temperature reference range [° C]
+255,
+260,
+400,TX Frequency Parameter
+410,TX power
+420,
+430,
+440,
+450,
+460,
+470,
+480,Sonde reset timer (multiples of 10 seconds)
+490,
+4a0,
+570,
+5a0,
+5b0,
+800,
+900,
