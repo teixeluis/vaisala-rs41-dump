@@ -92,5 +92,3 @@ dump_params_based_on_list () {
 init
 dump_params_based_on_list
 teardown
-
-
