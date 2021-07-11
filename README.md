@@ -36,7 +36,7 @@ to run the script with sudo permissions.
 There are two modes of operation, which are explained below:
 
 
-### 1. Specify interval of parameter ID's and step
+### Interval mode - specify interval of parameter ID's and step
 
 In this mode, you can execute a dump by specifying the interval of parameter ID's,
 and the step between values to be assumed. For example:
@@ -53,7 +53,7 @@ by running the following way:
 $ ./rs42_dump.sh 0x10 0x800 0x10 | tee dump.csv
 ```
 
-### 2. CSV list of parameters
+### CSV list mode - provide list of parameters to be scanned
 
 
 A csv file holding the list of parameters to be scanned is required for this mode.
