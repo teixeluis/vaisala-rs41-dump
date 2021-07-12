@@ -13,23 +13,54 @@ PARAM_FILE=rs41_params.csv
 READ_TIMEOUT=0.4
 MENU_TXT="(E)xit"
 
-START_VAL=$1
-END_VAL=$2
-STEP=$3
-
 init () {
     stty -F $SERIAL_PORT 9600 cs8 -cstopb -parenb -opost -ixon raw -echo
+
+    if [ $? -ne "0" ]; then
+        echo "rs41_dump.sh: failed to open serial port device:" $SERIAL_PORT 1>&2
+        exit 1
+    fi
 
     # creating a bidirectional file descriptor for
     # communication with the serial port:
 
     exec 99<> $SERIAL_PORT
 
-    # enable serial commands:
+    # test if the radiosonde has the menu enabled
+    # by sending a '\r' and checking for a '>'
+    # prompt:
 
-    #printf "STwsv" > $SERIAL_PORT
+    empty_command
 
-    # send empty command to let prompt/menu show up:
+    # if the prompt was not obtained, then we 
+    # assume the menu mode is disabled and try to
+    # enable it:
+
+    if [ "$EMPTY_CMD_RES" != "0" ]; then
+        echo "rs41_dump.sh: menu mode disabled. Going to enable it by sending the 'STwsv' string..." 1>&2
+
+        # enable serial commands:
+
+        printf "STwsv" >& $IO_DESC
+
+        # send empty command to let prompt/menu show up:
+        empty_command
+
+        # test if menu mode was successfully enabled:
+
+        if [ "$EMPTY_CMD_RES" == "0" ]; then
+            echo "rs41_dump.sh: menu mode was successfully enabled!" 1>&2
+        else
+            echo "rs41_dump.sh: failed to enable menu mode. Aborting." 1>&2
+
+            exit 1
+        fi        
+    else
+        echo "rs41_dump.sh: menu mode is already active." 1>&2
+    fi
+
+    # extra '\r' to let the menu show up again and buffer flushed before starting to take readings:
+
     empty_command
 }
 
@@ -44,7 +75,7 @@ empty_command () {
 
     while read -t $READ_TIMEOUT -d '>' answer; 
     do
-        true
+        EMPTY_CMD_RES=$?
     done <& $IO_DESC
 }
 
@@ -74,7 +105,7 @@ read_parameter () {
     # When we get a writeable command, we need to send a CR
     # character to skip writing to the parameter:
 
-    if [ $IS_RW -eq "1" ]; then
+    if [ "$IS_RW" == "1" ]; then
         empty_command
     fi
 }
@@ -130,30 +161,58 @@ dump_params_based_on_interval () {
     do
         param_name=$(printf "%X" $i)
         read_parameter $param_name
-        echo $param_name","$PARAM","$IS_RW
+
+        # Let's only print the parameter if it is set:
+        if [ -n "$PARAM" ]; then
+            echo $param_name","$PARAM","$IS_RW
+        fi
     done 
 }
 
+print_syntax () {
+    echo "rs42_dump.sh"
+    echo ""
+    echo "Dumps the configuration data from the Vaisala RS-41 radiosondes to the standard output in CSV format."
+    echo ""
+    echo "Syntax:"
+    echo ""
+    echo ""
+    echo "rs42_dump.sh [start_val] [end_val] [step]"
+    echo ""
+    echo "  start_val   - the initial parameter ID (in hex notation) in the scan interval."
+    echo "  end_val     - the final parameter ID (in hex notation) in the scan interval."
+    echo "  step        - the step between IDs to use."
+    echo ""
+    echo "Examples:"
+    echo ""
+    echo " 1. CSV list mode:"
+    echo ""
+    echo "./rs42_dump.sh 0x10 0x800 0x10"
+    echo ""    
+    echo " 2. Interval mode:"
+    echo ""
+    echo "./rs42_dump.sh"
+
+}
+
+if [ "$#" -ge 1 ] && [ "$1" == "--help" ]; then
+    print_syntax
+
+    exit 0
+fi
+
 init
 
-if [ -z $START_VAL ]; then
+if [ -z $1 ]; then
     dump_params_based_on_list
 else
     if [ "$#" -ne 3 ]; then
-        echo "rs42_dump.sh"
-        echo ""
-        echo "syntax:"
-        echo ""
-        echo "rs42_dump.sh start_val end_val step"
-        echo ""
-        echo "Example: "
-        echo ""
-        echo "./rs42_dump.sh 0x10 0x800 0x10"
+        print_syntax
 
         exit 1
     fi
 
-    dump_params_based_on_interval $START_VAL $END_VAL $STEP
+    dump_params_based_on_interval $1 $2 $3
 fi
 
 teardown

@@ -33,6 +33,33 @@ $ chmod a+x rs41_dump.sh
 Depending on your environment, in order to access the serial port you might need
 to run the script with sudo permissions.
 
+The syntax of the script is the following:
+
+```
+rs42_dump.sh
+
+Dumps the configuration data from the Vaisala RS-41 radiosondes to the standard output in CSV format.
+
+Syntax:
+
+
+rs42_dump.sh [start_val] [end_val] [step]
+
+  start_val   - the initial parameter ID (in hex notation) in the scan interval.
+  end_val     - the final parameter ID (in hex notation) in the scan interval.
+  step        - the step between IDs to use.
+
+Examples:
+
+ 1. CSV list mode:
+
+./rs42_dump.sh 0x10 0x800 0x10
+
+ 2. Interval mode:
+
+./rs42_dump.sh
+```
+
 There are two modes of operation, which are explained below:
 
 
