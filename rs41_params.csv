@@ -24,12 +24,12 @@ E0,Shutdown battery voltage threshold x 100 mV
 140,
 150,
 160,
-170,PCB type
-180,PCB serial
+170,Pressure module type (daughterboard)
+180,Main board serial number
 190,
 1A0,
 1A8,
-1B0,
+1B0,Pressure module serial number
 1B8,
 1C0,
 1C8,
@@ -41,10 +41,11 @@ E0,Shutdown battery voltage threshold x 100 mV
 210,
 220,Current CPU temperature [° C]
 230,Current radio temperature (Si4032) [° C]
-240,
+240,Unknown. Value seen toggling between 0 and 16384 
 250,Current temperature reference range [° C]
 255,
 260,
+270,
 400,TX Frequency Parameter
 410,TX power
 420,

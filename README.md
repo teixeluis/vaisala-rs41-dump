@@ -53,7 +53,7 @@ Examples:
 
  1. CSV list mode:
 
-./rs42_dump.sh 0x10 0x800 0x10
+./rs42_dump.sh 0x10 0x1000 0x10
 
  2. Interval mode:
 
@@ -70,14 +70,14 @@ and the step between values to be assumed. For example:
 
 
 ```
-$ ./rs42_dump.sh 0x10 0x800 0x10
+$ ./rs42_dump.sh 0x10 0x1000 0x01
 ```
 
 You can also watch the parameters being dumped while these are saved to a file,
 by running the following way:
 
 ```
-$ ./rs42_dump.sh 0x10 0x800 0x10 | tee dump.csv
+$ ./rs42_dump.sh 0x10 0x1000 0x01 | tee dump.csv
 ```
 
 ### CSV list mode - provide list of parameters to be scanned
